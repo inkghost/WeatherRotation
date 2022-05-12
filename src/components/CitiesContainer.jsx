@@ -1,31 +1,32 @@
 import React from "react"
 import styled from "styled-components"
+import City from "./City"
 
 export default function CitiesContainer() {
   const cities = [
     "BEIJING",
     "SHANGHAI",
     "URUMQI",
-    "CHENGDU",
+    "HANGZHOU",
     "SHIJIAZHUANG",
-    "HAIKOU",
+    "MOHE",
+    "TURPAN",
     "JINAN",
     "LHASA",
     "SHENYANG",
     "CHANGSHA",
     "FUZHOU",
-    "SHANGTOU",
   ]
 
   return (
     <Container>
       {cities.map((city, index) => {
         return (
-          <>
+          <React.Fragment key={city}>
             {index % 5 === 0 && <div className="empty"></div>}
-            <div className="city">{city}</div>
+            <City cityName={city} />
             {index % 5 === 1 && <div className="empty"></div>}
-          </>
+          </React.Fragment>
         )
       })}
     </Container>
@@ -40,9 +41,6 @@ const Container = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   color: white;
-  .city {
-    width: 33.3%;
-  }
   .empty {
     width: 16.7%;
   }
