@@ -12,4 +12,4 @@
 
 Raw data taken from [NOAA](https://www.ncei.noaa.gov/maps/daily/)
 
-Design By [Weather Radials](http://www.weather-radials.com/)
+Inspired by [Weather Radials](http://www.weather-radials.com/)

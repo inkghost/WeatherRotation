@@ -9,7 +9,7 @@ export default function CitiesContainer() {
     "URUMQI",
     "HANGZHOU",
     "SHIJIAZHUANG",
-    "MOHE",
+    "CHONGQING",
     "TURPAN",
     "JINAN",
     "LHASA",
@@ -40,7 +40,6 @@ const Container = styled.div`
   align-items: center;
   flex-direction: row;
   flex-wrap: wrap;
-  color: white;
   .empty {
     width: 16.7%;
   }
