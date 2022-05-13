@@ -10,6 +10,12 @@ export const defaultConfig = {
   outerRadius: 400,
   // 温度范围
   tempRange: [-40, 40],
+  // 时间范围
+  dateRange: [new Date("2020-1-1"), new Date("2020-12-31")],
+  // 温度条宽度范围
+  barWidthRange: [2, 4],
+  // 降水量范围
+  prcpRange: [0, 5],
   // 数据
   data: [],
   // 外层标签
@@ -19,8 +25,6 @@ export const defaultConfig = {
 export default function WeatherRadial(container, name, config = defaultConfig) {
   // 清空容器内部
   d3.selectAll(`.${name} > *`).remove()
-
-  // 定义比例尺
 
   // 标签比例尺
   const labelScale = d3
@@ -33,6 +37,26 @@ export default function WeatherRadial(container, name, config = defaultConfig) {
     .scaleLinear()
     .domain(config.tempRange)
     .range([0, config.outerRadius])
+
+  // 日期比例尺
+  const dateScale = d3.scaleTime().domain(config.dateRange).range([0, 360])
+
+  // 颜色比例尺
+  const colorScale = d3
+    .scaleSequential(d3.interpolateSpectral)
+    .domain([tempScale.ticks(8)[7], tempScale.ticks(8)[3]])
+
+  // 温度条宽度比例尺
+  const barWidthScale = d3
+    .scaleLinear()
+    .domain(config.tempRange)
+    .range(config.barWidthRange)
+
+  // 降水量比例尺
+  const prcpScale = d3
+    .scaleLinear()
+    .domain(config.prcpRange)
+    .range([0, config.outerRadius / 3])
 
   const svg = container.append("svg")
 
@@ -135,7 +159,7 @@ export default function WeatherRadial(container, name, config = defaultConfig) {
     .attr("transform", `translate(13,${-config.outerRadius - 55})`)
     .attr("text-anchor", "start")
     .attr("fill", "black")
-    .attr("font-weight","bold")
+    .attr("font-weight", "bold")
 
   // 绘制温度坐标轴
   const tempAxis = d3
@@ -166,6 +190,42 @@ export default function WeatherRadial(container, name, config = defaultConfig) {
     .attr("font-size", "1rem")
     .attr("fill", "#c9c9c9")
     .attr("transform", "translate(10,0)")
+
+  // 绘制降水量
+  svg
+    .selectAll(".prcp-circle")
+    .data(config.data)
+    .enter()
+    .append("circle")
+    .attr("r", (item) => prcpScale(item.PRCP))
+    .attr("fill", "rgba(98, 143, 201, 0.275)")
+    .attr("transform", (item) => {
+      return `rotate(${dateScale(item.DATE)},${config.origin.x},${
+        config.origin.y
+      }) translate(${config.origin.x},${
+        config.origin.y - tempScale(item.TAVG)
+      })`
+    })
+
+  // 绘制温度条
+  svg
+    .selectAll(".temp-bar")
+    .data(config.data)
+    .enter()
+    .append("rect")
+    .attr("width", (item) => barWidthScale(item.TAVG))
+    .attr("height", (item) => tempScale(item.TMAX) - tempScale(item.TMIN))
+    .attr("rx", (item) => barWidthScale(item.TAVG) / 2)
+    .attr("ry", (item) => barWidthScale(item.TAVG) / 2)
+    .attr("fill", (item) => colorScale(item.TAVG))
+    .attr("stroke-linecap", "round")
+    .attr("transform", (item) => {
+      return `rotate(${dateScale(item.DATE)},${config.origin.x},${
+        config.origin.y
+      }) translate(${config.origin.x},${
+        config.origin.y - tempScale(item.TMAX)
+      })`
+    })
 
   // 绘制 name
   svg
