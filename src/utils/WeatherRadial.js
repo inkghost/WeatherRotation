@@ -19,6 +19,8 @@ export const defaultConfig = {
   data: [],
   // 外层标签
   labels: [],
+  // 是否可交互
+  interactive: false,
 }
 
 export default function WeatherRadial(container, name, config = defaultConfig) {
@@ -198,26 +200,27 @@ export default function WeatherRadial(container, name, config = defaultConfig) {
     })
 
   // 绘制温度条
-  svg
-    .selectAll(".temp-bar-back")
-    .data(config.data)
-    .enter()
-    .append("path")
-    .attr("d", () => {
-      return d3
-        .arc()
-        .innerRadius(config.innerRadius)
-        .outerRadius(config.outerRadius)
-        .startAngle((-Math.PI / config.data.length) * 0.7)
-        .endAngle((Math.PI / config.data.length) * 0.7)()
-    })
-    .attr("fill", "white")
-    .attr("opacity", "0")
-    .attr("transform", (item) => {
-      return `rotate(${dateScale(item.DATE)},${config.origin.x},${
-        config.origin.y
-      }) translate(${config.origin.x},${config.origin.y})`
-    })
+  config.interactive &&
+    svg
+      .selectAll(".temp-bar-back")
+      .data(config.data)
+      .enter()
+      .append("path")
+      .attr("d", () => {
+        return d3
+          .arc()
+          .innerRadius(config.innerRadius)
+          .outerRadius(config.outerRadius)
+          .startAngle((-Math.PI / config.data.length) * 0.7)
+          .endAngle((Math.PI / config.data.length) * 0.7)()
+      })
+      .attr("fill", "white")
+      .attr("opacity", "0")
+      .attr("transform", (item) => {
+        return `rotate(${dateScale(item.DATE)},${config.origin.x},${
+          config.origin.y
+        }) translate(${config.origin.x},${config.origin.y})`
+      })
   svg
     .selectAll(".temp-bar")
     .data(config.data)
