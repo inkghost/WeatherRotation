@@ -24,7 +24,7 @@ export default function CitiesContainer() {
         return (
           <React.Fragment key={city}>
             {index % 5 === 0 && <div className="empty"></div>}
-            <City cityName={city} index={index} />
+            <City cityName={city} single={false} />
             {index % 5 === 1 && <div className="empty"></div>}
           </React.Fragment>
         )

@@ -4,7 +4,7 @@ import WeatherRadial, { defaultConfig as config } from "../utils/WeatherRadial"
 import { useNavigate } from "react-router-dom"
 import * as d3 from "d3"
 
-export default function City({ cityName, index }) {
+export default function City({ cityName, single }) {
   const navigate = useNavigate()
 
   const init = async () => {
@@ -34,6 +34,8 @@ export default function City({ cityName, index }) {
         "NOV",
         "DEC",
       ],
+      interactive: single,
+      cityName: cityName,
     })
   }
 
@@ -43,12 +45,24 @@ export default function City({ cityName, index }) {
 
   useEffect(() => {
     init()
-  })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-  return <Container className={cityName} onClick={toDetail}></Container>
+  return (
+    <>
+      {single ? (
+        <SingleContainer className={cityName}></SingleContainer>
+      ) : (
+        <OverviewContainer
+          className={cityName}
+          onClick={toDetail}
+        ></OverviewContainer>
+      )}
+    </>
+  )
 }
 
-const Container = styled.div`
+const OverviewContainer = styled.div`
   width: 33.3%;
   border-radius: 50%;
   cursor: pointer;
@@ -71,4 +85,11 @@ const Container = styled.div`
       opacity: 1;
     }
   }
+`
+
+const SingleContainer = styled.div`
+  width: 50%;
+  border-radius: 50%;
+  box-shadow: 0 -12px 20px -12px rgba(0, 0, 0, 0.35),
+    0 12px 20px -12px rgba(0, 0, 0, 0.35);
 `
