@@ -262,13 +262,10 @@ export default function WeatherRadial(container, name, config = defaultConfig) {
   }
 
   config.labels.length === 0 &&
-    tmpBarBack
-      .attr(
-        "class",
-        (item) => `back${item.DATE.getMonth()}-${item.DATE.getDate()}`
-      )
-      .on("mouseenter", (event, item) => handleMouseEnter(item))
-      .on("mouseleave", (event, item) => handleMouseLeave(item))
+    tmpBarBack.attr(
+      "class",
+      (item) => `back${item.DATE.getMonth()}-${item.DATE.getDate()}`
+    )
 
   // 绘制降水量
   svg
@@ -308,7 +305,7 @@ export default function WeatherRadial(container, name, config = defaultConfig) {
     })
 
   // 可交互背景
-  config.interactive &&
+  if (config.interactive || config.labels.length === 0) {
     svg
       .selectAll(".temp-bar-interactive")
       .data(config.data)
@@ -316,7 +313,10 @@ export default function WeatherRadial(container, name, config = defaultConfig) {
       .append("path")
       .attr(
         "class",
-        (item) => `interactive${item.DATE.getMonth()}-${item.DATE.getDate()}`
+        (item) =>
+          `${
+            config.interactive ? "interactive" : "month"
+          }${item.DATE.getMonth()}-${item.DATE.getDate()}`
       )
       .attr("d", () => {
         return d3
@@ -335,6 +335,7 @@ export default function WeatherRadial(container, name, config = defaultConfig) {
       })
       .on("mouseenter", (event, item) => handleMouseEnter(item))
       .on("mouseleave", (event, item) => handleMouseLeave(item))
+  }
 
   // 绘制 name
   svg

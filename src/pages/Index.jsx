@@ -39,12 +39,38 @@ const Container = styled.div`
     position: absolute;
     width: 35%;
     left: 0;
+    animation: slide-in-left 2s ease-out both;
+    @keyframes slide-in-left {
+      0% {
+        -webkit-transform: translateX(-500px);
+        transform: translateX(-500px);
+        opacity: 0;
+      }
+      100% {
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
   }
 
   .backRight {
     position: absolute;
     width: 35%;
     right: 0;
+    animation: slide-in-right 2s ease-out both;
+    @keyframes slide-in-right {
+      0% {
+        -webkit-transform: translateX(500px);
+        transform: translateX(500px);
+        opacity: 0;
+      }
+      100% {
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
   }
 
   .title {
