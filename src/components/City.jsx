@@ -92,4 +92,17 @@ const SingleContainer = styled.div`
   border-radius: 50%;
   box-shadow: 0 -12px 20px -12px rgba(0, 0, 0, 0.35),
     0 12px 20px -12px rgba(0, 0, 0, 0.35);
+  animation: scale-in-center 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  @keyframes scale-in-center {
+    0% {
+      -webkit-transform: scale(0);
+      transform: scale(0);
+      opacity: 1;
+    }
+    100% {
+      -webkit-transform: scale(1);
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
 `
