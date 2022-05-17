@@ -1,4 +1,4 @@
-# Weather Radials 2020
+# Weather Rotation 2020
 
 ## Install
 

@@ -5,7 +5,7 @@ export default function Overview() {
   return (
     <Container>
       <div className="title">
-        <h1>Weather / Radials</h1>
+        <h1>Weather / Rotation</h1>
       </div>
       <CitiesContainer />
     </Container>

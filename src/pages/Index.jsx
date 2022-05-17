@@ -17,7 +17,7 @@ export default function Index() {
       <img src={backRight} alt="backRight" className="backRight" />
       <div className="title">
         <h1>Weather/</h1>
-        <h1>Radials</h1>
+        <h1>Rotation</h1>
       </div>
       <button className="overview" onClick={toOverview}>
         Overview
