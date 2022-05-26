@@ -1,10 +1,11 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import mapboxgl from "!mapbox-gl"
 import WindGL from "../utils/WindGL"
 
 export default function MyMap() {
   var mapContainer = null
+  const [initCount, setInitCount] = useState(0)
 
   const init = () => {
     mapboxgl.accessToken =
@@ -77,11 +78,12 @@ export default function MyMap() {
   }
 
   useEffect(() => {
-    if (mapContainer !== null) {
+    if (mapContainer !== null && initCount < 2) {
+      setInitCount(initCount + 1)
       init()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapContainer])
+  }, [mapContainer, initCount])
 
   return (
     <div>

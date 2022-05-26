@@ -7,8 +7,8 @@ import { useNavigate } from "react-router-dom"
 export default function Index() {
   const navigate = useNavigate()
 
-  const toOverview = () => {
-    navigate("/overview")
+  const changeNavi = (route) => {
+    navigate(`/${route}`)
   }
 
   return (
@@ -19,9 +19,32 @@ export default function Index() {
         <h1>Weather/</h1>
         <h1>Rotation</h1>
       </div>
-      <button className="overview" onClick={toOverview}>
-        Overview
-      </button>
+      <div className="btn-line">
+        <button
+          className="overview"
+          onClick={() => {
+            changeNavi("overview")
+          }}
+        >
+          Overview
+        </button>
+        <button
+          className="wind"
+          onClick={() => {
+            changeNavi("wind")
+          }}
+        >
+          Wind
+        </button>
+        <button
+          className="predict"
+          onClick={() => {
+            changeNavi("overview")
+          }}
+        >
+          Predict
+        </button>
+      </div>
     </Container>
   )
 }
@@ -106,8 +129,16 @@ const Container = styled.div`
     }
   }
 
+  .btn-line {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 1rem;
+  }
+
   button {
-    width: 20rem;
+    width: 10rem;
     padding: 1rem 2rem;
     border-radius: 0.4rem;
     border: none;
@@ -115,12 +146,20 @@ const Container = styled.div`
     font-size: 1.3rem;
     color: white;
     cursor: pointer;
-    background: linear-gradient(to right, #7fc6ea, #73e5be);
     box-shadow: 0 0 0 0 rgba(0, 0, 0, 0), 0 0 0 0 rgba(0, 0, 0, 0);
     transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     &:hover {
       box-shadow: 0 -12px 20px -12px rgba(0, 0, 0, 0.35),
         0 12px 20px -12px rgba(0, 0, 0, 0.35);
     }
+  }
+  .overview {
+    background: linear-gradient(to right, #7fc6ea, #73e5be);
+  }
+  .wind {
+    background: linear-gradient(to right, #73e5be, #f3ce8b);
+  }
+  .predict {
+    background: linear-gradient(to right, #f3ce8b, #ea8d8d);
   }
 `
