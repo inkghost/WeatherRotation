@@ -1,9 +1,21 @@
 import styled from "styled-components"
 import CitiesContainer from "../components/CitiesContainer"
+import { Button } from "antd"
+import { LeftOutlined } from "@ant-design/icons"
 
 export default function Overview() {
   return (
     <Container>
+      <Button
+        type="primary"
+        shape="circle"
+        icon={<LeftOutlined />}
+        className="back-btn"
+        onClick={() => {
+          window.history.back()
+        }}
+      >
+      </Button>
       <div className="title">
         <h1>Weather / Rotation</h1>
       </div>
@@ -20,6 +32,11 @@ const Container = styled.div`
   flex-direction: column;
   gap: 1rem;
   padding: 2rem;
+  .back-btn {
+    position: absolute;
+    left: 2%;
+    top: 2%;
+  }
   .title {
     font-size: 1.5rem;
   }
