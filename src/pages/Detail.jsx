@@ -28,7 +28,6 @@ const Container = styled.div`
   padding: 2rem;
   overflow: hidden;
   .details {
-    align-self: stretch;
     width: 60%;
     overflow: scroll;
   }

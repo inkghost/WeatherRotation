@@ -14,7 +14,7 @@ export const defaultConfig = {
   // 时间范围
   dateRange: [new Date("2020-1-1"), new Date("2021-1-1")],
   // 降水量范围
-  prcpRange: [0, 5],
+  prcpRange: [0, 130],
   // 数据
   data: [],
   // 外层标签
@@ -44,7 +44,7 @@ export default function WeatherRadial(container, name, config = defaultConfig) {
         g.append("text").text(`TAVG:${item.TAVG}℃`).attr("dy", "-3em")
         g.append("text").text(`TMAX:${item.TMAX}℃`).attr("dy", "-1.5em")
         g.append("text").text(`TMIN:${item.TMIN}℃`).attr("dy", "0em")
-        g.append("text").text(`PCRP:${item.PRCP}inches`).attr("dy", "1.5em")
+        g.append("text").text(`PCRP:${item.PRCP}mm`).attr("dy", "1.5em")
         g.append("text")
           .text(`DATE:${item.DATE.toLocaleString().split(" ")[0]}`)
           .attr("dy", "3em")
@@ -99,7 +99,7 @@ export default function WeatherRadial(container, name, config = defaultConfig) {
   const prcpScale = d3
     .scaleLinear()
     .domain(config.prcpRange)
-    .range([0, config.outerRadius / 3])
+    .range([0, 130])
 
   const svg = container.append("svg")
 
@@ -269,18 +269,23 @@ export default function WeatherRadial(container, name, config = defaultConfig) {
 
   // 绘制降水量
   svg
-    .selectAll(".prcp-circle")
+    .selectAll(".prcp-bar")
     .data(config.data)
     .enter()
-    .append("circle")
-    .attr("r", (item) => prcpScale(item.PRCP))
-    .attr("fill", "rgba(98, 143, 201, 0.3)")
+    .append("path")
+    .attr("d", (item) => {
+      return d3
+        .arc()
+        .innerRadius(config.outerRadius)
+        .outerRadius(config.outerRadius + prcpScale(item.PRCP))
+        .startAngle((-Math.PI / config.data.length) * 0.7)
+        .endAngle((Math.PI / config.data.length) * 0.7)()
+    })
+    .attr("fill", "rgba(98, 143, 201, 0.7)")
     .attr("transform", (item) => {
       return `rotate(${dateScale(item.DATE)},${config.origin.x},${
         config.origin.y
-      }) translate(${config.origin.x},${
-        config.origin.y - tempScale(item.TAVG)
-      })`
+      }) translate(${config.origin.x},${config.origin.y})`
     })
 
   // 绘制温度条
