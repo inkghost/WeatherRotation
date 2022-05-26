@@ -19,6 +19,11 @@ def fah2cel(value):
     c = (f - 32) / 1.8
     return round(c, 2)
 
+# 英寸转毫米
+def inch2mm(value):
+    inch = float(value)
+    mm = inch * 25.4
+    return round(mm, 2)
 
 # 数据处理
 def process(file):
@@ -33,7 +38,7 @@ def process(file):
                             fah2cel(row[row_header_list[2]]),
                             fah2cel(row[row_header_list[3]]),
                             fah2cel(row[row_header_list[4]]),
-                             row[row_header_list[5]]])
+                            inch2mm(row[row_header_list[5]])])
 
 
 def main():
