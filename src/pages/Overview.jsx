@@ -7,7 +7,6 @@ export default function Overview() {
   return (
     <Container>
       <Button
-        type="primary"
         shape="circle"
         icon={<LeftOutlined />}
         className="back-btn"

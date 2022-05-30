@@ -2,7 +2,7 @@ import React from "react"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
 import City from "../components/City"
-import MonthContainer from "../components/MonthContainer"
+import PrcpContainer from "../components/PrcpContainer"
 import { Button } from "antd"
 import { LeftOutlined } from "@ant-design/icons"
 
@@ -12,19 +12,15 @@ export default function Detail() {
   return (
     <Container>
       <Button
-        type="primary"
         shape="circle"
         icon={<LeftOutlined />}
         className="back-btn"
         onClick={() => {
           window.history.back()
         }}
-      >
-      </Button>
+      ></Button>
       <City cityName={city} single={true} />
-      <div className="details">
-        <MonthContainer cityName={city} />
-      </div>
+      <PrcpContainer cityName={city}/>
     </Container>
   )
 }
@@ -43,9 +39,5 @@ const Container = styled.div`
     position: absolute;
     left: 2%;
     top: 2%;
-  }
-  .details {
-    width: 60%;
-    overflow: scroll;
   }
 `
