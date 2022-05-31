@@ -9,6 +9,7 @@ export default function PrcpContainer({ cityName }) {
   const [citiesOption, setCitiesOption] = useState([])
   const [selectedCities, setSelectedCities] = useState([])
   const [canSelcetOpen, setCanSelcetOpen] = useState(false)
+  const [prcps, setPrcps] = useState([])
 
   const cities = [
     "BEIJING",
@@ -24,6 +25,8 @@ export default function PrcpContainer({ cityName }) {
     "CHANGSHA",
     "FUZHOU",
   ]
+
+  const colors = ["#80c6ea", "#74e5be", "#f3cf8a"]
 
   const init = () => {
     let tmpCitiesOption = []
@@ -62,7 +65,8 @@ export default function PrcpContainer({ cityName }) {
     PrcpArea(d3.select(".prcp"), "prcp", {
       ...config,
       data,
-      cities
+      cities,
+      setPrcps,
     })
   }
 
@@ -99,6 +103,23 @@ export default function PrcpContainer({ cityName }) {
         </Select>
       </div>
       <div className="prcp"></div>
+      <div className="tooltip hidden">
+        <p>
+          <strong className="date">2020</strong>
+        </p>
+        {[cityName, ...selectedCities].map((item, index) => {
+          return (
+            <div className="info" key={item}>
+              <div
+                className="circle"
+                style={{ backgroundColor: colors[index] }}
+              ></div>
+              <span className="city">{item}</span>
+              <strong className="case">{prcps[index]}mm</strong>
+            </div>
+          )
+        })}
+      </div>
     </Container>
   )
 }
@@ -119,5 +140,39 @@ const Container = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .tooltip {
+    position: absolute;
+    min-width: 10rem;
+    height: auto;
+    padding: 0.5rem;
+    box-sizing: border-box;
+    background-color: white;
+    border-radius: 5px;
+    border: 1px solid #c9c9c9;
+    pointer-events: none;
+    color: gray;
+    display: block;
+    .info {
+      display: flex;
+      align-items: center;
+    }
+
+    .circle {
+      height: 15px;
+      width: 15px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+
+    .case {
+      display: inline-block;
+      margin-left: auto;
+    }
+  }
+
+  .hidden {
+    display: none;
   }
 `

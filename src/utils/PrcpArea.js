@@ -13,6 +13,7 @@ export const defaultConfig = {
   cities: [],
   // 柱形颜色
   colors: ["#80c6ea", "#74e5be", "#f3cf8a"],
+  setPrcps: null,
 }
 
 const months = [
@@ -122,7 +123,7 @@ export default function PrcpArea(container, name, config = defaultConfig) {
     .data((item) => item)
     .enter()
     .append("rect")
-    .attr("class", (item) => `prcp-bar prcp-bar-${item.DATE}`)
+    .attr("class", (item, index) => `prcp-bar prcp-bar-${index}`)
     .attr("x", (item) => {
       return (
         dateScaleX(item.DATE) +
@@ -141,6 +142,53 @@ export default function PrcpArea(container, name, config = defaultConfig) {
       "y",
       (item) => scaleY(item.PRCP) + config.origin.y - config.chartHeight
     )
+
+  // 可交互背景
+  let interactiveGroup = svg.append("g").attr("class", "interactive-group")
+  interactiveGroup
+    .selectAll(".prcp-bar-interactive")
+    .data(
+      config.data[0].map((item, index) => {
+        return { DATE: item.DATE, INDEX: index }
+      })
+    )
+    .enter()
+    .append("rect")
+    .attr(
+      "class",
+      (item, index) => `prcp-bar-interactive prcp-bar-interactive-${index}`
+    )
+    .attr("fill", "#c9c9c9c9")
+    .attr("opacity", "0")
+    .attr("x", (item) => {
+      return dateScaleX(item.DATE) + config.origin.x
+    })
+    .attr("y", config.origin.y - config.chartHeight)
+    .attr("width", dateScaleX.bandwidth())
+    .attr("height", config.chartHeight)
+    .on("mouseenter", (event, item) => {
+      let { pageX, pageY } = event
+      // 将浮层位置设置为鼠标位置
+      let tooltip = d3
+        .select(".tooltip")
+        .style("left", pageX + 10 + "px")
+        .style("top", pageY + 10 + "px")
+
+      svg.select(`.prcp-bar-interactive-${item.INDEX}`).attr("opacity", "1")
+      config.setPrcps(config.data.map((_item) => _item[item.INDEX].PRCP))
+
+      tooltip.classed("hidden", false)
+    })
+    .on("mouseout", (event, item) => {
+      svg.select(`.prcp-bar-interactive-${item.INDEX}`).attr("opacity", "0")
+      d3.select(".tooltip").classed("hidden", true)
+    })
+    .on("mousemove", (event) => {
+      let { pageX, pageY } = event
+      d3.select(".tooltip")
+        .style("left", pageX + 10 + "px")
+        .style("top", pageY + 10 + "px")
+    })
 
   const extent = [
     [0, 0],
@@ -165,6 +213,12 @@ export default function PrcpArea(container, name, config = defaultConfig) {
         .call(d3.axisBottom(dateScaleX))
         .attr("visibility", "visible")
     }
+    svg
+      .selectAll(".prcp-bar-interactive")
+      .attr("x", (item) => {
+        return dateScaleX(item.DATE) + config.origin.x
+      })
+      .attr("width", dateScaleX.bandwidth())
     svg
       .selectAll(".prcp-bar")
       .attr("x", (item) => {
