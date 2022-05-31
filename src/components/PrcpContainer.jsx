@@ -38,7 +38,7 @@ export default function PrcpContainer({ cityName }) {
   const handleCityChange = (value) => {
     setSelectedCities(value)
     setCanSelcetOpen(true)
-    if (value.length === 3) {
+    if (value.length === 2) {
       setCanSelcetOpen(false)
     }
   }
@@ -47,19 +47,23 @@ export default function PrcpContainer({ cityName }) {
     const cities = [cityName, ...selectedCities]
     const data = []
     for (let index = 0; index < cities.length; index++) {
-      const item = cities[index]
-      data.push({
-        city: item,
-        data: (await d3.csv(`/data/processed/${item}.csv`)).map((item) => {
+      const city = cities[index]
+      data.push(
+        (await d3.csv(`/data/processed/${city}.csv`)).map((item) => {
           const date = new Date(item.DATE)
           return {
+            CITY: city,
             PRCP: +item.PRCP,
-            DATE: `${date.getMonth() + 1}/${date.getDate()}`,
+            DATE: `${date.getMonth() + 1}-${date.getDate()}`,
           }
-        }),
-      })
+        })
+      )
     }
-    PrcpArea(d3.select(".prcp"), "prcp", { ...config, data })
+    PrcpArea(d3.select(".prcp"), "prcp", {
+      ...config,
+      data,
+      cities
+    })
   }
 
   useEffect(() => {

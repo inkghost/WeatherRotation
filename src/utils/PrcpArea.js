@@ -8,10 +8,11 @@ export const defaultConfig = {
   chartHeight: 430,
   // 原点
   origin: { x: 50, y: 450 },
-  // 以年为单位还是以月为单位
-  yearly: true,
   // 数据
   data: [],
+  cities: [],
+  // 柱形颜色
+  colors: ["#80c6ea", "#74e5be", "#f3cf8a"],
 }
 
 const months = [
@@ -36,13 +37,13 @@ export default function PrcpArea(container, name, config = defaultConfig) {
   const svg = container.append("svg")
 
   // 横坐标比例尺
-  const scaleX = d3
+  const scaleX = d3.scaleBand().domain(months).range([0, config.chartWidth])
+
+  const dateScaleX = d3
     .scaleBand()
-    .domain(
-      config.yearly ? months : config.data[0].data.map((item) => item.DATE)
-    )
+    .domain(config.data[0].map((item) => item.DATE))
     .range([0, config.chartWidth])
-    .padding(0.15)
+    .padding(0.1)
 
   // 纵坐标比例尺
   const scaleY = d3
@@ -51,7 +52,7 @@ export default function PrcpArea(container, name, config = defaultConfig) {
       0,
       d3.max(
         config.data.map((item) => {
-          return d3.max(item.data.map((item) => item.PRCP))
+          return d3.max(item.map((item) => item.PRCP))
         })
       ),
     ])
@@ -67,8 +68,19 @@ export default function PrcpArea(container, name, config = defaultConfig) {
   svg
     .insert("g")
     .attr("transform", `translate(${config.origin.x},${config.origin.y})`)
+    .attr("class", "xAxis")
     .call(d3.axisBottom(scaleX))
     .attr("color", "#c9c9c9")
+    .selectAll("text")
+    .attr("transform", "rotate(-45 10 30)")
+
+  svg
+    .insert("g")
+    .attr("transform", `translate(${config.origin.x},${config.origin.y})`)
+    .attr("class", "xAxisDate")
+    .call(d3.axisBottom(dateScaleX))
+    .attr("color", "#c9c9c9")
+    .attr("visibility", "hidden")
     .selectAll("text")
     .attr("transform", "rotate(-45 10 30)")
 
@@ -78,14 +90,14 @@ export default function PrcpArea(container, name, config = defaultConfig) {
       "transform",
       `translate(${config.origin.x},${config.origin.y - config.chartHeight})`
     )
-    .attr('class', 'yAxis')
+    .attr("class", "yAxis")
     .call(d3.axisLeft(scaleY))
     .attr("color", "#c9c9c9")
     .selectAll("text")
 
   // 绘制网格线
   d3.selectAll(".yAxis .tick").each(function (d, i) {
-    if (d && d % 20 === 0 ) {
+    if (d && d % 20 === 0) {
       d3.select(this)
         .append("line")
         .attr("stroke", "#c9c9c9")
@@ -95,4 +107,83 @@ export default function PrcpArea(container, name, config = defaultConfig) {
         .attr("y2", 0)
     }
   })
+
+  // 绘制柱形
+  let cityGroup = svg
+    .selectAll(".city-group")
+    .data(config.data)
+    .enter()
+    .append("g")
+    .attr("class", (item) => `city-group-${item[0].CITY}`)
+    .attr("fill", (item, index) => config.colors[index])
+
+  cityGroup
+    .selectAll(".prcp-bar")
+    .data((item) => item)
+    .enter()
+    .append("rect")
+    .attr("class", (item) => `prcp-bar prcp-bar-${item.DATE}`)
+    .attr("x", (item) => {
+      return (
+        dateScaleX(item.DATE) +
+        (dateScaleX.bandwidth() / config.data.length) *
+          config.cities.indexOf(item.CITY) +
+        config.origin.x
+      )
+    })
+    .attr("y", scaleY(0) + config.origin.y - config.chartHeight)
+    .attr("width", dateScaleX.bandwidth() / config.data.length)
+    .attr("height", 0)
+    .transition()
+    .duration(1000)
+    .attr("height", (item) => config.chartHeight - scaleY(item.PRCP))
+    .attr(
+      "y",
+      (item) => scaleY(item.PRCP) + config.origin.y - config.chartHeight
+    )
+
+  const extent = [
+    [0, 0],
+    [config.chartWidth, config.chartHeight],
+  ]
+
+  const zoomed = (event) => {
+    dateScaleX.range(
+      [0, config.chartWidth].map((d) => event.transform.applyX(d))
+    )
+    scaleX.range([0, config.chartWidth].map((d) => event.transform.applyX(d)))
+    if (event.transform.k < 8) {
+      svg.selectAll(".xAxisDate").attr("visibility", "hidden")
+      svg
+        .selectAll(".xAxis")
+        .call(d3.axisBottom(scaleX))
+        .attr("visibility", "visible")
+    } else {
+      svg.selectAll(".xAxis").attr("visibility", "hidden")
+      svg
+        .selectAll(".xAxisDate")
+        .call(d3.axisBottom(dateScaleX))
+        .attr("visibility", "visible")
+    }
+    svg
+      .selectAll(".prcp-bar")
+      .attr("x", (item) => {
+        return (
+          dateScaleX(item.DATE) +
+          (dateScaleX.bandwidth() / config.data.length) *
+            config.cities.indexOf(item.CITY) +
+          config.origin.x
+        )
+      })
+      .attr("width", dateScaleX.bandwidth() / config.data.length)
+  }
+
+  svg.call(
+    d3
+      .zoom()
+      .scaleExtent([1, 15])
+      .translateExtent(extent)
+      .extent(extent)
+      .on("zoom", zoomed)
+  )
 }

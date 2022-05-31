@@ -102,6 +102,12 @@ const Container = styled.div`
       both;
     animation: tracking-in-expand 2s cubic-bezier(0.215, 0.61, 0.355, 1) both;
 
+    h1 {
+      margin: 0;
+      font-weight: bold;
+      line-height: 1;
+    }
+
     @-webkit-keyframes tracking-in-expand {
       0% {
         letter-spacing: -0.5em;
