@@ -34,15 +34,12 @@ export default function MyMap() {
     var map = new mapboxgl.Map({
       container: mapContainer,
       style: "mapbox://styles/mapbox/dark-v10",
-      center: [116, 40],
+      center: [121, 31],
       zoom: 1,
       scrollZoom: true,
       renderWorldCopies: false,
-      antialias: true,
+      antialias: false,
     })
-
-    var nav = new mapboxgl.NavigationControl()
-    map.addControl(nav, "top-left")
 
     var wind = null
     var windLayer = {
@@ -56,7 +53,7 @@ export default function MyMap() {
           name = "2022052200"
         }
         updateWind(name)
-        new MouseEvent('click', { bubbles: true })
+
       },
       render: function (gl, matrix) {
         if (wind.windData) {
@@ -68,6 +65,23 @@ export default function MyMap() {
         }
       },
     }
+
+    // map.on("render", function () {
+    //   if(map.getLayer("wind") == undefined){
+    //     map.addLayer(windLayer)
+    //     console.log("addLayer")
+    //   }
+    // })
+
+    // map.on("load", function () {
+    //   map.addLayer(windLayer)
+    //   console.log("load")
+    // })
+
+    map.on("style.load", function () {
+      map.addLayer(windLayer)
+      console.log("style.load")
+    })
 
     function updateWind(name) {
       fetch(`data/wind/${name}.json`)
@@ -82,11 +96,8 @@ export default function MyMap() {
         })
     }
 
-    map.on("load", function () {
-      map.addLayer(windLayer)
-    })
-
     map.on("move", function () {
+      console.log("move")
       if (wind) wind.resize()
     })
   }
