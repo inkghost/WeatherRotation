@@ -110,7 +110,12 @@ export default function Predict() {
       .then((response) => response.json())
       .then((data) => {
         if (data.code === "200") {
-          setHourlyWeatherInfo(data.hourly)
+          setHourlyWeatherInfo(
+            data.hourly.map((item) => {
+              const fxTime = new Date(item.fxTime)
+              return { ...item, time: `${fxTime.getHours()}:00`, temp: Number(item.temp) }
+            })
+          )
         }
       })
     fetch(
@@ -167,7 +172,10 @@ export default function Predict() {
         ></Button>
       </div>
       <div className="weather-info">
-        <HourlyWeather />
+        <HourlyWeather
+          nowWeather={nowWeatherInfo}
+          hourlyWeather={hourlyWeatherInfo}
+        />
         <DailyWeather weatherInfo={dailyWeatherInfo} />
       </div>
     </Container>
@@ -182,7 +190,6 @@ const Container = styled.div`
   gap: 1rem;
   padding: 2rem;
   height: 100vh;
-  overflow: hidden;
   .back-btn {
     position: absolute;
     left: 2%;

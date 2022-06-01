@@ -32,7 +32,7 @@ export default function DailyWeather({ weatherInfo }) {
 }
 
 const Container = styled.div`
-  width: 30%;
+  width: 35%;
   height: 100%;
   display: flex;
   justify-content: space-between;
@@ -42,7 +42,7 @@ const Container = styled.div`
   }
   .weather-info {
     justify-content: space-between !important;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     .weather-icon {
       display: flex;
       justify-content: center;

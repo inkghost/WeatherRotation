@@ -10,7 +10,7 @@ export default function PrcpContainer({ cityName }) {
   const [selectedCities, setSelectedCities] = useState([])
   const [canSelcetOpen, setCanSelcetOpen] = useState(false)
   const [prcps, setPrcps] = useState([])
-  const [prcpDate, setPrcpDate] = useState('')
+  const [prcpDate, setPrcpDate] = useState("")
 
   const cities = [
     "BEIJING",
