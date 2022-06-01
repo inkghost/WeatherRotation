@@ -1,7 +1,7 @@
 import * as d3 from "d3"
 
 export const defaultConfig = {
-  viewBox: "0 0 850 370",
+  viewBox: "0 0 850 380",
   width: "100%",
   height: "100%",
   chartWidth: 800,
@@ -183,4 +183,16 @@ export default function TempLine(container, name, config = defaultConfig) {
     .on("mouseenter", handleMouseEnter)
     .on("mousemove", handleMouseMove)
     .on("mouseleave", handleMouseLeave)
+
+  const weatherIcons = svg.append("g")
+  weatherIcons
+    .selectAll(".weather-icons")
+    .data(config.data)
+    .enter()
+    .append("image")
+    .attr("x", (item) => scaleX(item.time) + config.origin.x)
+    .attr("y", config.origin.y + 35)
+    .attr("height", 18)
+    .attr("width", 18)
+    .attr("xlink:href", (item) => `/icons/${item.icon}.svg`)
 }
