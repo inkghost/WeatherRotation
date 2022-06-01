@@ -10,6 +10,7 @@ export default function PrcpContainer({ cityName }) {
   const [selectedCities, setSelectedCities] = useState([])
   const [canSelcetOpen, setCanSelcetOpen] = useState(false)
   const [prcps, setPrcps] = useState([])
+  const [prcpDate, setPrcpDate] = useState('')
 
   const cities = [
     "BEIJING",
@@ -67,6 +68,7 @@ export default function PrcpContainer({ cityName }) {
       data,
       cities,
       setPrcps,
+      setPrcpDate,
     })
   }
 
@@ -105,7 +107,7 @@ export default function PrcpContainer({ cityName }) {
       <div className="prcp"></div>
       <div className="tooltip hidden">
         <p>
-          <strong className="date">2020</strong>
+          <strong className="date">{prcpDate}</strong>
         </p>
         {[cityName, ...selectedCities].map((item, index) => {
           return (

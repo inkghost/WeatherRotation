@@ -14,6 +14,7 @@ export const defaultConfig = {
   // 柱形颜色
   colors: ["#80c6ea", "#74e5be", "#f3cf8a"],
   setPrcps: null,
+  setPrcpDate: null,
 }
 
 const months = [
@@ -176,6 +177,7 @@ export default function PrcpArea(container, name, config = defaultConfig) {
 
       svg.select(`.prcp-bar-interactive-${item.INDEX}`).attr("opacity", "1")
       config.setPrcps(config.data.map((_item) => _item[item.INDEX].PRCP))
+      config.setPrcpDate(item.DATE)
 
       tooltip.classed("hidden", false)
     })

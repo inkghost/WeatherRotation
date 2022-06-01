@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react"
 import mapboxgl from "!mapbox-gl"
 import WindGL from "../utils/WindGL"
 import { DatePicker, TimePicker } from 'antd'
-import { style } from "d3-selection";
 
 export default function MyMap() {
   var predate = "20220522"
@@ -53,7 +52,7 @@ export default function MyMap() {
         wind = new WindGL(gl)
         wind.numParticles = 32768
         console.log(name)
-        if(name == undefined){
+        if(name === undefined){
           name = "2022052200"
         }
         updateWind(name)

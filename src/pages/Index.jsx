@@ -39,7 +39,7 @@ export default function Index() {
         <button
           className="predict"
           onClick={() => {
-            changeNavi("overview")
+            changeNavi("predict")
           }}
         >
           Predict
