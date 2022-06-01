@@ -2,12 +2,33 @@ import React, { useEffect, useState } from "react"
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import mapboxgl from "!mapbox-gl"
 import WindGL from "../utils/WindGL"
+import { DatePicker, TimePicker } from 'antd'
+import { style } from "d3-selection";
 
 export default function MyMap() {
+  var predate = "20220522"
+  var pretime = "00"
+
+  const timeChange = (time, timeString) => {
+    pretime = timeString
+    console.log(predate+pretime)
+    init(predate+pretime)
+  };
+
+  const dateChange = (date, dateString) => {
+    predate = dateString.replace(/-/g, '')
+    console.log(predate+pretime)
+    init(predate+pretime)
+  };
+
+  const disabledDate = (time) => {
+    return time < new Date('2022-05-22').getTime() || time > new Date(new Date().setDate(new Date().getDate() - 1)).getTime()
+  }
+
   var mapContainer = null
   const [initCount, setInitCount] = useState(0)
 
-  const init = () => {
+  const init = (name) => {
     mapboxgl.accessToken =
       "pk.eyJ1IjoiemhhbmdqaW5neXVhbiIsImEiOiJja2R5cHhoNXYycGVtMnlteXkwZGViZDc2In0.UhckH-74AgPwMsDhPjparQ"
 
@@ -24,17 +45,6 @@ export default function MyMap() {
     var nav = new mapboxgl.NavigationControl()
     map.addControl(nav, "top-left")
 
-    const windFiles = {
-      0: "2022051900",
-      6: "2022051906",
-      12: "2022051912",
-      18: "2022051918",
-      24: "2022052000",
-      30: "2022052006",
-      36: "2022052012",
-      42: "2022052018",
-    }
-
     var wind = null
     var windLayer = {
       id: "wind",
@@ -42,7 +52,12 @@ export default function MyMap() {
       onAdd: function (map, gl) {
         wind = new WindGL(gl)
         wind.numParticles = 32768
-        updateWind(0)
+        console.log(name)
+        if(name == undefined){
+          name = "2022052200"
+        }
+        updateWind(name)
+        new MouseEvent('click', { bubbles: true })
       },
       render: function (gl, matrix) {
         if (wind.windData) {
@@ -56,12 +71,12 @@ export default function MyMap() {
     }
 
     function updateWind(name) {
-      fetch(`data/wind/${windFiles[name]}.json`)
+      fetch(`data/wind/${name}.json`)
         .then((response) => response.json())
         .then((data) => {
           const windImage = new Image()
           data.image = windImage
-          windImage.src = "data/wind/" + windFiles[name] + ".png"
+          windImage.src = "data/wind/" + name + ".png"
           windImage.onload = function () {
             wind.setWind(data)
           }
@@ -91,6 +106,8 @@ export default function MyMap() {
         ref={(el) => (mapContainer = el)}
         style={{ height: "100%", width: "100%", position: "absolute" }}
       />
+      <DatePicker style={{position: "absolute",top: "8px",right: "16px",fontSize: "30px"}} onChange={dateChange} disabledDate={disabledDate}/>
+      <TimePicker style={{position: "absolute",top: "60px",right: "16px",fontSize: "30px"}} onChange={timeChange} format={"HH"} hourStep={6} showNow={false}/>
     </div>
   )
 }
