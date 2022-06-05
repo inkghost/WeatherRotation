@@ -42,13 +42,13 @@ const Container = styled.div`
   }
   .weather-info {
     justify-content: space-between !important;
-    font-size: 1.3rem;
+    font-size: 1.5vw;
     .weather-icon {
       display: flex;
       justify-content: center;
       align-items: center;
       flex-direction: column;
-      font-size: 0.9rem;
+      font-size: 1vw;
     }
   }
 `
